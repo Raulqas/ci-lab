@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+struct Magazin 
+{
+    char name[32];
+    char markaa[32];
+    char modell[32];
+    char stoimostyy[32];
+} zap[100];
+int Magazin_count = 0;
+void print_zap() 
+{
+    printf("zap\n");
+    for (int i = 0; i < Magazin_count; i++) 
+{
+    
+    printf("Naimenovanie: %s, Marka: %s, Model: %s,  Stoimosty: %s\n", zap[i].name, zap[i].markaa, zap[i].modell, zap[i].stoimostyy);
+}
+}
+
+void add_magazin() 
+{
+    printf("Enter naimenovane zapchas: ");
+    scanf("%s", zap[Magazin_count].name);
+    printf("Enter Marka: ");
+    scanf("%s", zap[Magazin_count].markaa);
+    printf("Enter Model: ");
+    scanf("%s", zap[Magazin_count].modell);
+    printf("Enter Stoimosty: ");
+    scanf("%s", zap[Magazin_count].stoimostyy);
+    
+    Magazin_count++;
+}
+void delete_magazina() 
+{
+    int index;
+    printf("Enter index of friend to delete: ");
+    scanf("%d", &index);
+    index--;
+    if (index < 0 || index >= Magazin_count) 
+    {
+        printf("Invalid index\n");
+        return;
+    }
+    for (int i = index; i < Magazin_count - 1; i++) 
+    {
+        zap[i] = zap[i + 1];
+    }
+    Magazin_count--;
+}
+void save_magazina_to_file() 
+{
+    FILE *f = fopen("friends.txt", "w");
+    for (int i = 0; i < Magazin_count; i++) 
+    {
+        fprintf(f, "%s %s %s %s\n", zap[i].name, zap[i].markaa, zap[i].modell, zap[i].stoimostyy);
+    }
+    fclose(f);
+}
+void load_friends_from_file() 
+{
+    FILE *f = fopen("friends.txt", "r");
+    Magazin_count = 0;
+    while (fscanf(f, "%s %s %s %s\n", zap[Magazin_count].name, zap[Magazin_count].markaa, zap[Magazin_count].modell, zap[Magazin_count].stoimostyy) != EOF) 
+    {
+    Magazin_count++;
+    }
+    fclose(f);
+}
+// void dannieVesta() 
+// {
+//     int month;
+//     printf("Enter birth month: ");
+//     scanf("%d", &month);
+//     for (int i = 0; i < Magazin_count; i++)  
+//     {
+//         int fmonth;
+//         sscanf(friends[i].birthdate, "%*d.%d.%*d", &fmonth);
+//         if (fmonth == month) 
+//         {
+//             printf("%s %s %s %s %s %s\n", friends[i].surname, friends[i].name, friends[i].middle_name, friends[i].birthdate, friends[i].address, friends[i].phone);
+//         }
+//     }
+// }
+int main() 
+{
+    load_friends_from_file();
+    int choice;
+    do 
+    {
+        printf("\n1. spisok zapchactey\n");
+        printf("2. dobavity zapchasty\n");
+        printf("3. udalit zapchacty\n");
+        // printf("4. dannie o Lada Vesta\n");
+        printf("5. vixod\n\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+        switch (choice) 
+        {
+            case 1:
+            print_zap();
+            break;
+            case 2:
+            add_magazin();
+            break;
+            case 3:
+            delete_magazina();
+            break;
+            // case 4:
+            // dannieVesta();
+            // break;
+        }
+    } while (choice != 5);
+    save_magazina_to_file();
+    return 100;
+    return 0;
+}
