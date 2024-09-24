@@ -1,0 +1,148 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+struct Magazin 
+{
+    string name;
+    string marka;
+    string model;
+    string stoimost;
+};
+
+vector<Magazin> zap;
+
+void print_zap() 
+{
+    cout << "Список запчастей:\n";
+    for (const auto& z : zap) 
+    {
+        cout << "Наименование: " << z.name << ", Марка: " << z.marka
+             << ", Модель: " << z.model << ", Стоимость: " << z.stoimost << "\n";
+    }
+}
+
+void add_magazin() 
+{
+    if (zap.size() >= 100) 
+    {
+        cout << "Невозможно добавить больше запчастей, достигнут лимит.\n";
+        return;
+    }
+
+    Magazin newZap;
+    cout << "Введите наименование запчасти: ";
+    cin >> newZap.name;
+    cout << "Введите марку: ";
+    cin >> newZap.marka;
+    cout << "Введите модель: ";
+    cin >> newZap.model;
+    cout << "Введите стоимость: ";
+    cin >> newZap.stoimost;
+
+    zap.push_back(newZap);
+}
+
+void delete_magazina() 
+{
+    int index;
+    cout << "Введите индекс запчасти для удаления: ";
+    cin >> index;
+    index--;
+
+    if (index < 0 || index >= zap.size()) 
+    {
+        cout << "Неверный индекс\n";
+        return;
+    }
+
+    zap.erase(zap.begin() + index);
+}
+
+void save_magazina_to_file() 
+{
+    ofstream file("magazin.txt");
+    if (!file) 
+    {
+        cout << "Ошибка при сохранении файла.\n";
+        return;
+    }
+
+    for (const auto& z : zap) 
+    {
+        file << z.name << " " << z.marka << " " << z.model << " " << z.stoimost << "\n";
+    }
+
+    file.close();
+}
+
+void load_magazin_from_file() 
+{
+    ifstream file("magazin.txt");
+    if (!file) 
+    {
+        cout << "Файл с запчастями не найден, загрузка пропущена.\n";
+        return;
+    }
+
+    zap.clear();
+    Magazin temp;
+    while (file >> temp.name >> temp.marka >> temp.model >> temp.stoimost) 
+    {
+        zap.push_back(temp);
+    }
+
+    file.close();
+}
+
+void dannie_vesta() 
+{
+    cout << "Запчасти для Lada Vesta:\n";
+    for (const auto& z : zap) 
+    {
+        if (z.marka == "Lada" && z.model == "Vesta") 
+        {
+            cout << "Наименование: " << z.name << ", Марка: " << z.marka
+                 << ", Модель: " << z.model << ", Стоимость: " << z.stoimost << "\n";
+        }
+    }
+}
+
+int main() 
+{
+    load_magazin_from_file();
+    int choice;
+
+    do 
+    {
+        cout << "\n1. Список запчастей\n";
+        cout << "2. Добавить запчасть\n";
+        cout << "3. Удалить запчасть\n";
+        cout << "4. Запчасти для Lada Vesta\n";
+        cout << "5. Выход\n\n";
+        cout << "Введите выбор: ";
+        cin >> choice;
+
+        switch (choice) 
+        {
+            case 1:
+                print_zap();
+                break;
+            case 2:
+                add_magazin();
+                break;
+            case 3:
+                delete_magazina();
+                break;
+            case 4:
+                dannie_vesta();
+                break;
+        }
+    } while (choice != 5);
+
+    save_magazina_to_file();
+    return 0;
+}
